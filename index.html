@@ -66,7 +66,7 @@ if(end.length)h+='<span class="chip ok">Terminas '+end.length+' cuota'+(end.leng
 m.vb.forEach(function(b){var p=b.v?(m.sp[b.k]||0)/b.v*100:0;if(p>=80)h+='<span class="chip wa">'+esc(b.k)+' al '+Math.round(p)+'%</span>'});h+='</div>';
 if(m.libre-m.bud-m.ahorro<0)h+='<div class="c er">Tu reparto supera lo libre por '+fm(m.bud+m.ahorro-m.libre)+'. Ajústalo en Presupuesto.</div>';
 if(note)h+='<div class="c ai">'+esc(note)+'</div>';
-h+='<div class="rw" style="margin-top:12px;gap:10px"><button style="flex:1" data-a="add">+ Gasto</button><button class="s" style="flex:1" data-a="tip">Consejo IA</button></div>';return h}
+h+='<div class="rw" style="margin-top:12px;gap:10px"><button style="flex:1" data-a="add">+ Gasto</button><button class="s" style="flex:1" data-a="tip">Consejo</button></div>';return h}
 function mov(){var h='<div class="t" style="font-size:18px">Movimientos</div>',d=draft;
 h+='<div class="c" id="fm"><div class="t">Nuevo gasto</div>'
 +'<button class="s" style="width:100%;margin-top:8px" data-a="refresh">Actualizar compras del atajo</button>'+(note?'<div class="mu" style="margin-top:6px">'+esc(note)+'</div>':'')+''
@@ -85,7 +85,7 @@ h+='<div class="c"><div class="t">Gastos fijos</div>';S.fijos.forEach(function(x
 h+='<div class="rw mu" style="margin-top:8px"><span>Cuotas CMR de este mes</span><span>'+fm(m.cmr)+'</span></div><button class="s" style="margin-top:8px" data-a="afx">+ Fijo</button>';
 h+='<div class="rw" style="border-top:.5px solid var(--tr);margin-top:10px;padding-top:8px"><span class="t">Te quedan para el mes</span><span class="t ok">'+fm(m.libre)+'</span></div></div>';
 h+='<div class="c"><div class="t">Reparto</div>';S.buckets.forEach(function(b,i){h+='<label>'+esc(b.k)+'</label><input type="number" data-bk="'+i+'" value="'+b.v+'">'});
-h+='<div class="mu" style="margin-top:8px">Asignado '+fm(m.bud+m.ahorro)+' de '+fm(m.libre)+'</div><button class="s" style="margin-top:8px;width:100%" data-a="rep">Sugerir reparto con IA</button></div>';
+h+='<div class="mu" style="margin-top:8px">Asignado '+fm(m.bud+m.ahorro)+' de '+fm(m.libre)+'</div><button class="s" style="margin-top:8px;width:100%" data-a="rep">Sugerir reparto</button></div>';
 h+='<div class="c"><div class="t">¿Puedo comprar esto?</div><input id="q" placeholder="Zapatillas $60.000"><button style="width:100%;margin-top:8px" data-a="buy">Preguntar</button>'+(note?'<div class="c ai">'+esc(note)+'</div>':'')+'</div>';return h}
 var MN=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 function deu(m){var h='<div class="t" style="font-size:18px">Deudas</div>',rest=m.cu.reduce(function(a,g){return a+g.vc*(g.n-g.act+1)},0),end=m.cu.filter(function(g){return g.act===g.n});
@@ -106,9 +106,26 @@ h+='<div class="c"><div class="t">Suscripciones</div><div class="mu">Informativo
 h+='<div class="rw" style="margin-top:8px"><span class="t">Total al mes</span><span>'+fm(S.subs.reduce(function(a,x){return a+x.v},0))+'</span></div><button class="s" style="margin-top:8px" data-a="ladd" data-l="subs">+ Suscripción</button>';D.forEach(function(x){h+='<div class="mv"><span class="mu">Detectada: '+esc(x.co)+' '+fm(x.m)+'</span><button class="s" data-a="sadd" data-n="'+esc(x.co)+'" data-v="'+x.m+'">Agregar</button></div>'});h+='</div>';
 h+='<div class="c"><div class="t">Ahorro e inversión</div>';S.metas.forEach(function(x,i){var pc=x.obj?x.act/x.obj*100:0;h+='<div style="margin-top:10px"><div class="rw" style="gap:6px">'+tp('metas',i,'n',x.n)+'<button class="x" data-a="ldel" data-l="metas" data-i="'+i+'">✕</button></div><label>Meta</label>'+tp('metas',i,'obj',x.obj,1)+'<label>Ahorrado</label>'+tp('metas',i,'act',x.act,1)+'<label>Aporte mensual</label>'+tp('metas',i,'ap',x.ap,1)+'<div class="bar"><i style="width:'+Math.min(100,pc)+'%;background:#34D399"></i></div><div class="rw mu"><span>'+Math.round(pc)+'%</span><span>'+(x.ap&&x.obj>x.act?Math.ceil((x.obj-x.act)/x.ap)+' meses':'—')+'</span></div><button class="s" style="margin-top:6px" data-a="aport" data-i="'+i+'">Aportar '+fm(x.ap)+'</button></div>'});
 h+='<button class="s" style="margin-top:10px" data-a="ladd" data-l="metas">+ Meta</button></div>';
-var sob=S.sueldo-m.fix-m.tot-m.ahorro;h+='<div class="c"><div class="t">Cierre del ciclo</div><div class="rw mu" style="margin-top:6px"><span>Ingresos</span><span>'+fm(S.sueldo)+'</span></div><div class="rw mu"><span>Gastos fijos</span><span>-'+fm(m.fix)+'</span></div><div class="rw mu"><span>Variables (de '+fm(m.bud)+')</span><span>-'+fm(m.tot)+'</span></div><div class="rw mu"><span>Ahorro e inversión</span><span>-'+fm(m.ahorro)+'</span></div><div class="rw" style="border-top:.5px solid var(--tr);margin-top:6px;padding-top:8px"><span class="t">Sobró</span><span class="t '+(sob<0?'er':'ok')+'">'+fm(sob)+'</span></div><button style="width:100%;margin-top:10px" data-a="cie">Conclusión con IA</button>'+(note?'<div class="c ai">'+esc(note)+'</div>':'')+'</div>';
+var sob=S.sueldo-m.fix-m.tot-m.ahorro;h+='<div class="c"><div class="t">Cierre del ciclo</div><div class="rw mu" style="margin-top:6px"><span>Ingresos</span><span>'+fm(S.sueldo)+'</span></div><div class="rw mu"><span>Gastos fijos</span><span>-'+fm(m.fix)+'</span></div><div class="rw mu"><span>Variables (de '+fm(m.bud)+')</span><span>-'+fm(m.tot)+'</span></div><div class="rw mu"><span>Ahorro e inversión</span><span>-'+fm(m.ahorro)+'</span></div><div class="rw" style="border-top:.5px solid var(--tr);margin-top:6px;padding-top:8px"><span class="t">Sobró</span><span class="t '+(sob<0?'er':'ok')+'">'+fm(sob)+'</span></div><button style="width:100%;margin-top:10px" data-a="cie">Conclusión del ciclo</button>'+(note?'<div class="c ai">'+esc(note)+'</div>':'')+'</div>';
 h+='<div class="c"><div class="t">Ajustes</div><label>Día de vencimiento CMR</label><input type="number" min="1" max="31" data-f="venc" value="'+S.venc+'"></div>';
 h+='<div class="c"><div class="t">Conectar el atajo</div><div class="mu" style="line-height:1.6">Cada pago de Wallet llega solo desde el atajo. Si no ves una compra, toca Actualizar en Movimientos.</div><button class="s" style="margin-top:8px" data-a="out">Cerrar sesión</button></div>';return h}
+function fp(n){return '$'+Math.round(n).toLocaleString('es-CL')}
+function adv(m){var L=[],pv={};S.gastos.filter(function(g){return g.n<=1&&ci(g.f)===m.c-1}).forEach(function(g){pv[g.cat]=(pv[g.cat]||0)+g.m});
+m.vb.forEach(function(b){var s=m.sp[b.k]||0,p=b.v?s/b.v*100:0;if(p>=100)L.push('Superaste '+b.k+' por '+fp(s-b.v)+'.');else if(p>=80)L.push(b.k+' va al '+Math.round(p)+'%: quedan '+fp(b.v-s)+' para '+m.days+' días.');if(pv[b.k]&&s>pv[b.k])L.push('En '+b.k+' ya llevas '+fp(s)+', más que todo el ciclo anterior ('+fp(pv[b.k])+').')});
+var end=m.cu.filter(function(g){return g.act===g.n});if(end.length)L.push('Este mes terminas '+end.length+' cuota'+(end.length>1?'s':'')+' de la CMR ('+end.map(function(g){return g.co}).join(', ')+'). Desde el próximo ciclo tu cuota baja a '+fp(m.cmr-end.reduce(function(a,g){return a+g.vc},0))+'.');
+var dv=S.venc-new Date().getDate();if(dv<0)dv+=30;if(dv<=5)L.push('La CMR vence en '+dv+' día'+(dv===1?'':'s')+'. Cuota de este mes: '+fp(m.cmr)+'.');
+var H=hor(m.c);if(H.n>=3)L.push(H.n+' compras chicas suman '+fp(H.s)+' este ciclo; al año serían '+fp(H.s*12)+'.');
+var pe=S.gastos.filter(function(g){return g.pend}).length;if(pe)L.push('Tienes '+pe+' compra'+(pe>1?'s':'')+' de la CMR sin indicar cuotas.');
+if(m.libre-m.bud-m.ahorro<0)L.push('Tu reparto supera lo libre por '+fp(m.bud+m.ahorro-m.libre)+'. Ajústalo en Presupuesto.');
+if(!L.length)L.push('Vas bien: te quedan '+fp(m.left)+' ('+fp(Math.max(0,m.left)/m.days)+' por día).');return L.slice(0,4).join('\n')}
+function local(a,m){
+if(a==='tip')return adv(m);
+if(a==='buy'){var q=$('q').value,v=parseInt(q.replace(/\D/g,''),10);if(!v)return 'Escribe el nombre y el monto, por ejemplo: Zapatillas $60.000.';var ct=cat(q),bl=(S.buckets.filter(function(b){return b.k===ct})[0]||{v:0}).v-(m.sp[ct]||0),r;
+if(v<=bl)r='Cabe en '+ct+': quedarían '+fp(bl-v)+' en ese monto.';else if(v<=m.left)r='No cabe solo en '+ct+' (quedan '+fp(Math.max(0,bl))+'), pero sí en el total: tendrías que sacar '+fp(v-Math.max(0,bl))+' de otros montos.';else r='No te alcanza: te faltarían '+fp(v-m.left)+' en este ciclo. Quedan '+m.days+' días para el próximo.';
+return r+(v<=m.left?' Tu gasto diario pasaría de '+fp(Math.max(0,m.left)/m.days)+' a '+fp((m.left-v)/m.days)+'.':'')}
+if(a==='rep'){if(m.libre<=0)return 'No queda saldo libre para repartir. Revisa tus gastos fijos.';var ah=Math.min(S.metas.reduce(function(x,y){return x+y.ap},0),Math.round(m.libre*.3)),rs=m.libre-ah,W={Salir:.25,Supermercado:.4,Bencina:.2,Imprevistos:.15};S.buckets.forEach(function(b){if(b.k==='Ahorro')b.v=ah;else if(W[b.k])b.v=Math.round(rs*W[b.k]/1000)*1000});save();return 'Reparto actualizado sobre '+fp(m.libre)+': ahorro '+fp(ah)+' y el resto entre Supermercado, Salir, Bencina e Imprevistos. Ajústalo a mano si quieres.'}
+var sob=S.sueldo-m.fix-m.tot-m.ahorro,mx='',mv=0;m.vb.forEach(function(b){var t=m.sp[b.k]||0;if(t>mv){mv=t;mx=b.k}});
+return 'Ingresos '+fp(S.sueldo)+', fijos '+fp(m.fix)+', variables '+fp(m.tot)+' de '+fp(m.bud)+' y ahorro '+fp(m.ahorro)+'. '+(sob<0?'Te pasaste por '+fp(-sob)+'.':'Sobraron '+fp(sob)+'.')+(mx?' Tu mayor gasto fue '+mx+' ('+fp(mv)+').':'')+'\n'+adv(m)}
 function render(){if(!CFG.url||!CFG.key||!SES){$('v').innerHTML=lg();$('nv').innerHTML='';return}var m=calc(),h=tab==='inicio'?inicio(m):tab==='mov'?mov():tab==='pre'?pre(m):tab==='mas'?mas(m):deu(m);$('v').innerHTML=h;document.body.classList.toggle('priv',!!S.priv);
 $('nv').innerHTML=[['inicio','Inicio'],['mov','Movimientos'],['pre','Presupuesto'],['deu','Deudas'],['mas','Más']].map(function(t){return '<button data-t="'+t[0]+'" class="'+(tab===t[0]?'on':'')+'">'+t[1]+'</button>'}).join('')}
 function $(i){return document.getElementById(i)}
@@ -133,12 +150,7 @@ S.reglas[co.toLowerCase()]=ct;draft={};save();try{await api('gastos',{m:'POST',b
 else if(a==='del'){try{await api('gastos?id=eq.'+encodeURIComponent(t.dataset.i),{m:'DELETE'})}catch(x){}await load()}
 else if(a==='afx'){S.fijos.push({n:'Nuevo',v:0});save();render()}
 else if(a==='dfx'){S.fijos.splice(+t.dataset.i,1);save();render()}
-else if(a==='tip'||a==='buy'||a==='rep'||a==='cie'){var old=t.textContent;t.textContent='Pensando…';
-try{if(a==='tip')note=await ask(ctx(m)+' Da un consejo útil y concreto para hoy, máximo 3 frases.');
-else if(a==='cie')note=await ask(ctx(m)+' Haz la conclusión del ciclo: ingresos '+S.sueldo+', fijos '+m.fix+', variables '+m.tot+' de '+m.bud+', ahorro '+m.ahorro+'. Di qué salió bien, qué mejorar y un consejo para el próximo ciclo. Máximo 5 frases.');
-else if(a==='buy')note=await ask(ctx(m)+' Pregunta: ¿puedo comprar "'+$('q').value+'"? Di si cabe, de qué monto saldría y cómo cambia el gasto diario. Máximo 4 frases.');
-else{var r=await ask(ctx(m)+' Propone un reparto del libre entre estos montos y devuelve SOLO JSON {"Salir":n,"Supermercado":n,"Bencina":n,"Imprevistos":n,"Ahorro":n} cuya suma sea como máximo '+m.libre+'.',true);S.buckets.forEach(function(b){if(r&&typeof r[b.k]==='number')b.v=Math.round(r[b.k])});save();note='Reparto actualizado. Puedes ajustarlo a mano.'}}
-catch(x){note='No pude consultar a la IA: '+(x&&x.message||'inténtalo de nuevo')}render()}});
+else if(a==='tip'||a==='buy'||a==='rep'||a==='cie'){note=local(a,m);render()}});
 document.addEventListener('change',function(e){var d=e.target.dataset;if(e.target.id==='tj'){$('cq').style.display=e.target.value==='cmr'?'block':'none';return}
 if(e.target.id==='fi'){var fl=e.target.files[0];if(fl){var rd=new FileReader();rd.onload=function(){imp(String(rd.result))};rd.readAsText(fl)}return}
 if(d.l){var o=S[d.l][+d.i];o[d.k]=d.k==='n'?e.target.value:(parseInt(e.target.value,10)||0);save();render();return}
